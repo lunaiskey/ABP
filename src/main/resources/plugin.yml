@@ -1,0 +1,5 @@
+name: AnotherBadPlugin
+version: '0.1'
+main: me.lunaiskey.anotherBadPlugin.AnotherBadPlugin
+api-version: '1.21'
+authors: [ Lunaiskey ]
