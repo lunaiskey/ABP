@@ -1,8 +1,11 @@
 package me.lunaiskey.anotherbadplugin.item;
 
 import me.lunaiskey.anotherbadplugin.AnotherBadPlugin;
+import me.lunaiskey.anotherbadplugin.item.attributes.BlockBreak;
 import me.lunaiskey.anotherbadplugin.item.attributes.ItemClickActions;
+import me.lunaiskey.anotherbadplugin.item.items.ItemTreeFeller;
 import org.bukkit.Material;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -31,6 +34,7 @@ public class ItemManager {
         registerItem(new Item("CONCRETE_CUM",Material.WHITE_CONCRETE).name("Concrete Cum").rarity(Rarity.RARE));
         registerItem(new Item("SESAME_SEED_SEMEN", Material.DRAGON_BREATH).name("Sesame Seed Semen").rarity(Rarity.EPIC));
         registerItem(new Item("DADS_ASHES",Material.LIGHT_GRAY_DYE).name("Dad's Ashes").rarity(Rarity.LEGENDARY));
+        registerItem(new ItemTreeFeller("TREE_FELLER",Material.DIAMOND_AXE).name("Treefeller").rarity(Rarity.EPIC));
     }
 
     private void registerItem(Item item) {
@@ -87,6 +91,14 @@ public class ItemManager {
         if (item.getIdentifier() == null) return;
         if (!item.isPlaceable()) {
             event.setCancelled(true);
+        }
+    }
+
+    public void onBreak(BlockBreakEvent event) {
+        Item item = getItem(NBTUtil.getItemIdentifier(event.getPlayer().getInventory().getItemInMainHand()));
+        if (item.getIdentifier() == null) return;
+        if (item instanceof BlockBreak blockBreak) {
+            blockBreak.onBlockBreak(event);
         }
     }
 }
