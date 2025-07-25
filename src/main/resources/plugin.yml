@@ -1,5 +1,8 @@
-name: AnotherBadPlugin
+name: ABP
 version: '0.1'
-main: me.lunaiskey.anotherBadPlugin.AnotherBadPlugin
+main: me.lunaiskey.anotherbadplugin.AnotherBadPlugin
 api-version: '1.21'
 authors: [ Lunaiskey ]
+commands:
+  customitem:
+    usage: /<command>
