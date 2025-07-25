@@ -20,7 +20,7 @@ public class CommandCustomItem extends CommandReturnHater {
             return;
         }
         if (args[0].equalsIgnoreCase("get")) {
-            onSubCommandGet(player,args);
+            onSubCommandGet(player, args);
             return;
         }
     }

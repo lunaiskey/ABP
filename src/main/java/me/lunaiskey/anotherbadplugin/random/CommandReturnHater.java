@@ -7,14 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandReturnHater implements CommandExecutor {
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull []args) {
-        command(sender,command,label,args);
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        command(sender, command, label, args);
         return true;
     }
 
-    public void command(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull []args) {
+    public void command(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 
     }
-
-
 }

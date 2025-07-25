@@ -9,6 +9,16 @@ public class Item {
     private String identifier = null;
     private Rarity rarity = null;
     private Material material = null;
+    private boolean placeable = false;
+
+    private Item() {
+
+    }
+
+    public Item(String identifier, Material material) {
+        this.identifier = identifier.toUpperCase();
+        this.material = material;
+    }
 
     public Item name(String name) {
         this.name = name;
@@ -17,11 +27,6 @@ public class Item {
 
     public String getName() {
         return name;
-    }
-
-    public Item identifier(String identifier) {
-        this.identifier = identifier.toUpperCase();
-        return this;
     }
 
     public String getIdentifier() {
@@ -37,12 +42,16 @@ public class Item {
         return rarity;
     }
 
-    public Item material(Material material) {
-        this.material = material;
+    public Material getMaterial() {
+        return material;
+    }
+
+    public Item setPlaceable(boolean placeable) {
+        this.placeable = placeable;
         return this;
     }
 
-    public Material getMaterial() {
-        return material;
+    public boolean isPlaceable() {
+        return placeable;
     }
 }

@@ -1,10 +1,10 @@
 package me.lunaiskey.anotherbadplugin.item;
 
 import me.lunaiskey.anotherbadplugin.AnotherBadPlugin;
-import net.kyori.adventure.text.Component;
+import me.lunaiskey.anotherbadplugin.item.attributes.ItemClickActions;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +17,8 @@ public class ItemManager {
     public static ItemManager get() {
         if (manager == null) {
             manager = new ItemManager();
+            AnotherBadPlugin.get().getLogger().info("Item Manager has been initialized");
         }
-        AnotherBadPlugin.get().getLogger().info("Item Manager has been initialized");
         return manager;
     }
 
@@ -27,7 +27,10 @@ public class ItemManager {
     }
 
     private void registerDefaultItems() {
-        registerItem(new Item().identifier("GOON_JUICE").name("Goon Juice").rarity(Rarity.UNCOMMON).material(Material.GHAST_TEAR));
+        registerItem(new Item("GOON_JUICE", Material.GHAST_TEAR).name("Goon Juice").rarity(Rarity.UNCOMMON));
+        registerItem(new Item("CONCRETE_CUM",Material.WHITE_CONCRETE).name("Concrete Cum").rarity(Rarity.RARE));
+        registerItem(new Item("SESAME_SEED_SEMEN", Material.DRAGON_BREATH).name("Sesame Seed Semen").rarity(Rarity.EPIC));
+        registerItem(new Item("DADS_ASHES",Material.LIGHT_GRAY_DYE).name("Dad's Ashes").rarity(Rarity.LEGENDARY));
     }
 
     private void registerItem(Item item) {
@@ -56,4 +59,34 @@ public class ItemManager {
     }
 
 
+    public void onClick(PlayerInteractEvent event) {
+        Item item = getItem(NBTUtil.getItemIdentifier(event.getItem()));
+        if (item.getIdentifier() == null) return;
+        if (item instanceof ItemClickActions action) {
+            switch(event.getAction()) {
+                case LEFT_CLICK_AIR, LEFT_CLICK_BLOCK -> {
+                    if (event.getPlayer().isSneaking()) {
+                        action.onLeftShiftClick(event);
+                    } else {
+                        action.onLeftClick(event);
+                    }
+                }
+                case RIGHT_CLICK_AIR, RIGHT_CLICK_BLOCK -> {
+                    if (event.getPlayer().isSneaking()) {
+                        action.onRightShiftClick(event);
+                    } else {
+                        action.onRightClick(event);
+                    }
+                }
+            }
+        }
+    }
+
+    public void onPlace(BlockPlaceEvent event) {
+        Item item = getItem(NBTUtil.getItemIdentifier(event.getItemInHand()));
+        if (item.getIdentifier() == null) return;
+        if (!item.isPlaceable()) {
+            event.setCancelled(true);
+        }
+    }
 }

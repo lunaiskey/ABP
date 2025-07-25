@@ -64,4 +64,10 @@ public class NBTUtil {
         nmsStack.set(DataComponents.CUSTOM_DATA,CustomData.of(customDataTag));
         return CraftItemStack.asBukkitCopy(nmsStack);
     }
+
+    public static String getItemIdentifier(ItemStack itemStack) {
+        CompoundTag tag = getABPCustomDataTag(itemStack);
+        Optional<String> identifier = tag.getString("identifier");
+        return identifier.orElse(null);
+    }
 }
