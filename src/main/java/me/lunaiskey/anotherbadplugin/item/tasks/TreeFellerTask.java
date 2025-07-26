@@ -3,29 +3,28 @@ package me.lunaiskey.anotherbadplugin.item.tasks;
 import me.lunaiskey.anotherbadplugin.AnotherBadPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.joml.Vector3d;
+import oshi.util.tuples.Triplet;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TreeFellerTask extends BukkitRunnable {
 
-    private Set<Location> locations;
+    private Set<Triplet<Integer,Integer,Integer>> locations;
     private Material blockMat;
+    private World world;
 
-    public TreeFellerTask(Set<Location> locations, Material blockMat) {
+    public TreeFellerTask(Set<Triplet<Integer,Integer,Integer>> locations, Material blockMat, World world) {
         this.locations = locations;
         this.blockMat = blockMat;
+        this.world = world;
     }
 
-    private Set<Location> newLocations = new HashSet<>();
+    private Set<Triplet<Integer,Integer,Integer>> newLocations = new HashSet<>();
     private int totalblocks = 0;
-    private boolean finished = false;
     private final int maxBlocks = 35;
     @Override
     public void run() {
@@ -34,37 +33,38 @@ public class TreeFellerTask extends BukkitRunnable {
             AnotherBadPlugin.get().getLogger().info("Ran out of blocks to break, cancelling task...");
             return;
         }
-        //AnotherBadPlugin.get().getLogger().info("TreeFellerTask: "+locations.size()+" Material: "+blockMat);
+
         AnotherBadPlugin.get().getLogger().info(""+locations.size());
-        for (Location location : locations) {
-            //AnotherBadPlugin.get().getLogger().info("checkpoint 1");
+        for (Triplet<Integer,Integer,Integer> location : locations) {
             if (totalblocks >= maxBlocks) {
                 AnotherBadPlugin.get().getLogger().info("Max blocks have been reached, ending task.");
                 this.cancel();
                 return;
             }
-            //AnotherBadPlugin.get().getLogger().info("checkpoint 2");
-            //AnotherBadPlugin.get().getLogger().info("x: " + (location.getBlockX()) + "y: " + (location.getBlockY()) + "z: " + (location.getBlockX()) + "Material: " + location.getBlock().getType());
+            Location coordLocation = new Location(world,location.getA(),location.getB(),location.getC());
             for (int x = 0; x < 3; x++) {
                 for (int z = 0; z < 3; z++) {
                     for (int y = 0; y < 3; y++) {
                         if (x == 1 && y == 1 && z == 1) continue;
-                        Location newLoc = new Location(location.getWorld(), location.getBlockX()+x-1, location.getBlockY()+y-1, location.getBlockZ()+z-1);
+                        Triplet<Integer,Integer,Integer> coords = new Triplet<>(location.getA()+x-1,location.getB()+y-1,location.getC()+z-1);
+                        Location newLoc = new Location(world, coords.getA(), coords.getB(), coords.getC());
                         Block newBlock = newLoc.getBlock();
-                        //AnotherBadPlugin.get().getLogger().info("x: " + (newLoc.getBlockX()) + "y: " + (newLoc.getBlockY()) + "z: " + (newLoc.getBlockZ()) + "Material: " + newBlock.getType());
                         if (newBlock.getType() == blockMat) {
                             if (totalblocks >= maxBlocks) {
                                 AnotherBadPlugin.get().getLogger().info("Max blocks have been reaches during the check process...");
-                                location.getBlock().setType(Material.AIR);
+                                coordLocation.getBlock().setType(Material.AIR);
                                 return;
                             }
-                            newLocations.add(newLoc);
+                            newLocations.add(coords);
                         }
                     }
                 }
             }
-            location.getBlock().setType(Material.AIR);
-            totalblocks++;
+            Block a = coordLocation.getBlock();
+            if (a.getType() == blockMat) {
+                coordLocation.getBlock().setType(Material.AIR);
+                totalblocks++;
+            }
         }
         locations.clear();
         locations.addAll(newLocations);

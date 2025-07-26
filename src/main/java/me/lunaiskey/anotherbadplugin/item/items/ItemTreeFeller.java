@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import oshi.util.tuples.Triplet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,9 +54,10 @@ public class ItemTreeFeller extends Item implements ItemClickActions, BlockBreak
             return;
         }
         event.setCancelled(true);
-        Set<Location> locations = new HashSet<>();
-        locations.add(event.getBlock().getLocation());
+        Set<Triplet<Integer,Integer,Integer>> locations = new HashSet<>();
+        Location loc = event.getBlock().getLocation();
+        locations.add(new Triplet<>(loc.getBlockX(),loc.getBlockY(),loc.getBlockZ()));
         AnotherBadPlugin.get().getLogger().info("onBlockBreak: "+locations.size());
-        new TreeFellerTask(locations,blockMat).runTaskTimer(AnotherBadPlugin.get(),0,2);
+        new TreeFellerTask(locations,blockMat,loc.getWorld()).runTaskTimer(AnotherBadPlugin.get(),0,3);
     }
 }
